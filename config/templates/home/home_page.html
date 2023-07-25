@@ -1,0 +1,77 @@
+{% extends "base.html" %} 
+
+{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
+
+{% get_settings %} 
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block content %}
+{% image page.banner_image scale-100 as ban_image %}
+<div class="page-header" style="height: 200px; background-image: url('{{ ban_image.url }}');  background-size: 100px;" >
+    <h1 style="color:darkred; padding: 65px ">{{ page.banner|richtext }}<small>{{page.banner_text|richtext}}</small></h1>
+    
+    {% comment %} <img src="{{ ban_image.url }}" alt="" > {% endcomment %}
+  </div>
+
+  <div class="carousel">
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        {% for loop_cycle in page.carousel_images.all %}
+        {% image loop_cycle.carousel_image fill-300x200 as img %}
+            <div class="carousel-item {% if forloop.counter == 1 %} active {% endif%}">
+                <img class = "d-bloc w-100" src="{{ img.url }}" alt="{{ img.alt }}"/>
+            </div>
+        {%endfor%}
+       
+      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </div>
+  {% comment %} <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+      <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+      <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+    </ol>
+  
+    <!-- Wrapper for slides -->
+  
+    <div class="carousel-inner" role="listbox">
+        {% for loop_cycle in page.carousel_images.all %}
+            {% image loop_cycle.carousel_image fill-400x300 as img %}
+                <div class="item active">
+                    <img class = "d-bloc w-100" src="{{ img.url }}" alt="{{ img.alt }}"/>
+                </div>
+        {%endfor%}
+    </div>
+  
+    <!-- Controls -->
+    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div> {% endcomment %}
+
+  Site settings : 
+  <div>
+  {{settings.site_settings.Socialmediasettings.facebook}}
+  </div>
+   
+{% endblock %}
+
+
+
+
+ 

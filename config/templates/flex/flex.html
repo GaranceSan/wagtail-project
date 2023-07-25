@@ -1,0 +1,15 @@
+{% extends "base.html" %} 
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+
+
+{% block content %}
+    <div>
+    {{ page.soustitre|richtext }}
+    </div>
+
+    {% for block in page.contenu %}
+        {% include_block block %}
+    {%endfor%}
+{% endblock %}

@@ -4,3 +4,5 @@ db.sqlite3
 dev.py
 production.py
 staging.py
+/media/
+/static/
