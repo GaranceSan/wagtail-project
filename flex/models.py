@@ -13,7 +13,8 @@ class Flexpage(Page):
         ("title_and_text", blocks.TitleAndText()),
         ("full_richtext", blocks.RichText()),
         ("card_service", blocks.Cards()),
-        ("CTA", blocks.CTA())
+        ("CTA", blocks.CTA()),
+        ("button_block", blocks.ButtonBlock()),
     ],
     use_json_field=True, null=True)
 
