@@ -4,7 +4,8 @@ from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 from streams import blocks
-
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path
+from django.shortcuts import render
 
 
 class BlogListingPage(Page):
@@ -26,6 +27,12 @@ class BlogListingPage(Page):
         context = super().get_context(request,*args, **kwargs)
         context["posts"]= BlogDetailPage.objects.live().public()
         return context
+    
+    @path('blog/authors/')
+    def BlogAuthorList(self, request,*args,**kwargs):
+        context = self.get_context(request,*args,**kwargs)
+        context["authors"] = BlogDetailPage.objects.auteur().live().public()
+        return render(request, 'blog/authors.html',context)
 
 
 class BlogDetailPage(Page):
@@ -50,10 +57,16 @@ class BlogDetailPage(Page):
     ],
     use_json_field=True, null=True)
 
+    auteur = models.CharField(
+            max_length =  100,
+            blank = False,
+            null = True)
+
     content_panels = Page.content_panels + [
         FieldPanel("custom_title"),
         FieldPanel("blog_image"),
         FieldPanel("contenu"),
+        FieldPanel("auteur"),
     ]
 
      
