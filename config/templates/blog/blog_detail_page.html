@@ -17,4 +17,16 @@
              {% include_block block  %} 
         {% endfor %}
     </div>
+    <ul>
+        {% for iter in self.blog_authors.all %}
+        {% image iter.author.image fill-100x100 as img %}
+        <li>
+            {{iter.author.name}}
+        </br>
+            {{iter.author.intro}}
+        </br>
+            <img src="{{img.url}}"" alt="{{iter.author.name}}">
+        </li>
+        {%endfor%}
+    </ul>
 {% endblock %}
