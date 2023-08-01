@@ -29,4 +29,13 @@
         </li>
         {%endfor%}
     </ul>
+    <div>
+        <ul>
+            {% for cat in self.categories.all%}
+            <li>
+                <a href="{{self.get_parent.url}}"?category={{cat.slug}}>{{cat.name}}</a>
+            </li>
+            {%endfor%}
+        </ul>
+    </div>
 {% endblock %}

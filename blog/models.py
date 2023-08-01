@@ -1,11 +1,38 @@
 from django.db import models
+from django import forms
 from wagtail import blocks
 from wagtail.models import Page,Orderable
-from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel,MultiFieldPanel,InlinePanel
 from wagtail.fields import StreamField
 from wagtail.snippets.models import register_snippet
 from streams import blocks
+
+class Categories(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(
+        verbose_name= "slug",
+        allow_unicode= True,
+        max_length= 255
+    )
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("slug")
+    ]
+
+    class Meta:
+        verbose_name = "Blog Category"
+        verbose_name_plural = "Blog Categories"
+        ordering = ["name"]
+
+    def __str__ (self) :
+        return self.name
+
+register_snippet(Categories)
+
+
+
 
 class BlogAuthorsOrderable(Orderable):
     page = ParentalKey("blog.BlogDetailPage", related_name="blog_authors")
@@ -102,13 +129,20 @@ class BlogDetailPage(Page):
     ],
     use_json_field=True, null=True)
 
+    categories = ParentalManyToManyField("blog.Categories", blank=True)
+
     content_panels = Page.content_panels + [
         FieldPanel("custom_title"),
         FieldPanel("blog_image"),
         FieldPanel("contenu"),
         MultiFieldPanel([
             InlinePanel("blog_authors", label="Authors", min_num=1)],
-            heading="Author(s)")
+            heading="Author(s)"),
+        MultiFieldPanel(
+            [
+                FieldPanel("categories", widget = forms.CheckboxSelectMultiple)
+            ], heading = "categories"
+        )
         ]
     
 
