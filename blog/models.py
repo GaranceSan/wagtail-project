@@ -5,6 +5,7 @@ from wagtail.models import Page,Orderable
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel,MultiFieldPanel,InlinePanel
 from wagtail.fields import StreamField
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from wagtail.snippets.models import register_snippet
 from streams import blocks
 
@@ -103,20 +104,33 @@ class BlogListingPage(Page):
     def get_context(self, request,*args, **kwargs):
         """Adding custom stuff to our context"""
         context = super().get_context(request,*args, **kwargs)
-        context["posts"]= BlogDetailPage.objects.live().public()
+        all_posts = BlogDetailPage.objects.live().public().order_by("-first_published_at")
+     
+        paginator= Paginator(all_posts,1)
+        page= request.GET.get("page")
+        try: 
+            posts=paginator.page(page)
+        except PageNotAnInteger:
+            posts=paginator.page(1)
+        except EmptyPage:
+            posts=paginator.page(paginator.num_pages)
+
+        context["posts"]= posts
+
+        context["categories"]=Categories.objects.all()
         return context
 
 
 class BlogDetailPage(Page):
     custom_title = models.CharField(
         max_length =  100,
-        blank = False,
+        blank = True,
         null = True,
         help_text = "Overwrites the default title",
     )
     blog_image = models.ForeignKey(
          "wagtailimages.Image",
-         blank = False,
+         blank = True,
          null = True,
          related_name= "+",
          on_delete=models.SET_NULL,)
@@ -131,9 +145,20 @@ class BlogDetailPage(Page):
 
     categories = ParentalManyToManyField("blog.Categories", blank=True)
 
+class ArticleBlogPage(BlogDetailPage):
+    template = "blog/article_blog_page.html"
+
+    subtitle = models.CharField(max_length=100,blank=True, null=True)
+
+    
+    intro_image = models.ForeignKey("wagtailimages.Image", blank=True, null=True, on_delete=models.SET_NULL)
+
+
     content_panels = Page.content_panels + [
         FieldPanel("custom_title"),
         FieldPanel("blog_image"),
+        FieldPanel("subtitle"),
+        FieldPanel("intro_image"),
         FieldPanel("contenu"),
         MultiFieldPanel([
             InlinePanel("blog_authors", label="Authors", min_num=1)],
@@ -144,6 +169,8 @@ class BlogDetailPage(Page):
             ], heading = "categories"
         )
         ]
+    
+
     
 
      

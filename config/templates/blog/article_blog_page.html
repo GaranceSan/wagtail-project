@@ -9,7 +9,18 @@
 
     <div class="container mt-5 mb-5">
         <div class="text-center">
-            <h1>{{ self.custom_title }}</h1>
+            <h1>
+                {% if self.custom_title %} 
+                    {{ self.custom_title }}
+                {% else %}
+                    {{ self.title }}
+                {%endif%}
+            </h1>
+            {% if self.subtitle %}
+                <h3>{{self.subtitle}}</h3>
+         
+            {%endif%}
+
         </div>
     </div>
     <div>
@@ -27,7 +38,7 @@
         </br>
             <img src="{{img.url}}"" alt="{{iter.author.name}}">
         </li>
-        {% endfor %}
+        {%endfor%}
     </ul>
     <div>
         <ul>
@@ -35,7 +46,7 @@
             <li>
                 <a href="{{self.get_parent.url}}"?category={{cat.slug}}>{{cat.name}}</a>sions
             </li>
-            {% endfor %}
+            {%endfor%}
         </ul>
     </div>
 {% endblock %}
